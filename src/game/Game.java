@@ -8,8 +8,8 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import actors.Player;
-import actors.Tile;
-import actors.Enemy;
+import actors.*;
+//import actors.Enemy;
 
 import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements KeyListener {
@@ -18,7 +18,7 @@ public class Game extends Canvas implements KeyListener {
     Map map = new Map(50, 50, tileSize);
 
     Player player;
-    Enemy enemy;
+    SmartEnemy enemy;
 
     BufferStrategy strategy;
 
@@ -53,7 +53,7 @@ public class Game extends Canvas implements KeyListener {
     public void initGame() {
         initMap();
         player = new Player(8, 1, tileSize);
-        enemy  = new Enemy(1, 4, tileSize);
+        enemy  = new SmartEnemy(9, 1, tileSize);
     }
     public void initMap() {
         map.setTile(0, 0, new Tile(tileSize));
@@ -70,7 +70,7 @@ public class Game extends Canvas implements KeyListener {
         map.setTile(5, 9, new Tile(tileSize));
         map.setTile(6, 9, new Tile(tileSize));
         map.setTile(7, 9, new Tile(tileSize));
-        map.setTile(8, 9, new Tile(tileSize));
+        map.setTile(8, 10, new Tile(tileSize));
         //map.setTile(8, 8, new Tile(tileSize));
         map.setTile(9, 9, new Tile(tileSize));
         map.setTile(10, 9, new Tile(tileSize));
