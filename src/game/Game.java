@@ -122,31 +122,9 @@ public class Game extends Canvas implements KeyListener {
     public void updateGame() {
         //updatePlayer();
         enemy.move();
-        updateEnemy();
+        enemy.update(player, map);
     }
 
-    public void updateEnemy() {
-        int x = enemy.getX();
-        int y = enemy.getY();
-        int direction = enemy.getDirection();
-        Tile[][] tileMap = map.getTileMap();
-        if (!enemy.isMoving()) {
-            if (tileMap[x][y + 1] != null) {
-                if (tileMap[x + (1 * direction)][y] == null && !(player.getStance() == 0 && (x + 1 * direction) == player.getX())) {
-                    if (direction == -1) {
-                        enemy.moveLeft();
-                    } else if (direction == 1) {
-                        enemy.moveRight();
-                    }
-                } else {
-                    enemy.setDirection(direction * -1);
-                }
-            }
-        }
-        if (!enemy.isMoving() && tileMap[x][y + 1] == null) {
-            enemy.moveDown();
-        }
-    }
 
     //public void updatePlayer() {
         //int x = player.getX();
