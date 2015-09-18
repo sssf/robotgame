@@ -1,157 +1,108 @@
 package actors;
 
 import java.awt.*;
-import game.Map;
 
 public class Player extends MoveableActor{
 
     private int stance = 1; //0 = box_mode, 1 = normal, 2 = long legs.
-    private int newStance = 1;
-    private boolean canMove = true;
 
     //Orkar inte med 3000 get/set till.
     public boolean buttonLeft = false;
     public boolean buttonRight = false;
     public boolean buttonUp = false;
     public boolean buttonDown = false;
+    private int rotation = 0;
+    private int maxRotation = 90;
+    private int tippingLenght = 1;
+    private int tippingHeight = 1;
 
-    private enum Action {
-        NONE,
-        MOVE,
-        CLIMB,
-        GROW,
-        SHRINK,
-        FALL
-    }
-
-    private enum Stance {
-        BOX,
-        NORMAL,
-        STANDING
-    }
-
-    Action action;
-
-    public Player(int x, int y, int tileSize) {
-        super(tileSize);
+    public Player(int x, int y, int tileSize, Tile[][] map) {
+        super(tileSize, map);
         setX(x);
         setY(y);
-        //h = tileSize;
-        //direction = 0;
         tileSize = tileSize;
-        action = action.NONE;
+        state = NONE;
+
+        canClimb = true;
+        canFall = true;
     }
-
-    //public void setStance(int stance) {
-        //if (stance < 0 || stance > 3 || !canMove) {
-            //return;
-        //}
-        //this.newStance = stance;
-        //if (newStance == 0 && this.stance == 1) {
-            //this.stance = 0;
-            //return;
-        //} else if (newStance == 1 && this.stance == 0) {
-            //this.stance = 1;
-            //return;
-        //}
-        //if (newStance != this.stance) {
-            //canMove = false;
-        //}
-    //}
-
-
-    //public boolean canMove() {
-        //return (!isMoving && canMove);
-    //}
 
     public int getStance() {
         return stance;
     }
 
-    public void update(Map map) {
-        if (!isOnGround(map) && action != action.CLIMB && x % tileSize == 0) {
-            action = action.FALL;
-        }
-
-        if (action == action.FALL) {
-            fall(map);
-        }
-
-        if (action == action.MOVE || action == action.CLIMB) {
-            updatePosition();
-            if (action == action.MOVE) {
-                return;
-            }
-        }
-
-        if (action == action.GROW) {
+    public void update() {
+        super.update();
+        if (state == GROW) {
             if (stance < 3) {
                 stance++;
             }
-            action = action.NONE;
+            state = NONE;
         }
-
-        if (action == action.SHRINK) {
+        if (state == SHRINK) {
             if (stance > 0) {
                 stance--;
             }
-            action = action.NONE;
+            state = NONE;
+        }
+        setKeys();
+        act();
+    }
+    private void updateRotation(Graphics2D g) {
+        rotation += direction * 5;
+        g.rotate(Math.toRadians(rotation), x + (direction == 1 ? tileSize : 0), y+tileSize);
+
+        g.setColor(Color.blue);
+        g.fillRect(x, y, tileSize, tileSize);
+        g.fillRect(x, y-tileSize, tileSize, tileSize+h);
+        g.fillRect(x, y-(tileSize*2), tileSize, tileSize+h);
+
+        g.rotate(Math.toRadians(-rotation), x + (direction == 1 ? tileSize : 0), y+tileSize);
+        if (rotation % maxRotation == 0) {
+            rotation = 0;
+            x += tippingLenght * tileSize * direction;
+            y -= tippingHeight * tileSize;
+            stance = 1;
+            state = NONE;
         }
 
-        if (action == action.NONE) {
+    }
+
+    private void setKeys() {
+        if (state == NONE) {
             if (buttonLeft) {
                 this.direction = -1;
-                action = action.MOVE;
+                state = MOVE;
             }
             if (buttonRight) {
                 this.direction = 1;
-                action = action.MOVE;
+                state = MOVE;
             }
             if (buttonUp) {
                 buttonUp = false;
-                action = action.GROW;
+                state = GROW;
                 //moveUp();
             }
             if (buttonDown) {
                 buttonDown = false;
-                action = action.SHRINK;
+                state = SHRINK;
             }
         }
-        act(map);
     }
-    private boolean isOnGround(Map map) {
-        Tile[][] tileMap = map.getTileMap();
-        int x = getX();
-        int y = getY();
-        return (tileMap[x][y + 1] != null);
-    }
-    private void act(Map map) {
-        switch (action) {
-            case MOVE: move(map); break;
+
+    private void act() {
+        switch (state) {
+            case MOVE: move(); break;
             case GROW: break;
             case SHRINK: break;
         }
     }
-    private void updatePosition() {
-		int animationSpeed = 8;
-		if (direction != 0) {
-			x += animationSpeed * direction;
-			if (x % tileSize == 0) {
-                action = action.NONE;
-			}
-		}
-    }
 
-    private void fall(Map map) {
-        int animationSpeed = 16;
-        y += animationSpeed;
-        if (y % tileSize == 0 && isOnGround(map)) {
-            stance = 1;
-            action = action.NONE;
+    public void draw(Graphics2D g) {
+        if (state == TIPPING) {
+            updateRotation(g);
+            return;
         }
-    }
-
-    public void draw(Graphics g) {
         if (stance == 0) {
             g.setColor(Color.red);
             g.fillRect(x, y, tileSize, tileSize);
@@ -173,23 +124,59 @@ public class Player extends MoveableActor{
         }
     }
 
-    public void move(Map map) {
-        Tile[][] tileMap = map.getTileMap();
+    public void move() {
+        int realX = getRealX();
+        if (x % tileSize != 0)
+            return;
         int x = getX();
         int y = getY();
-        if (stance == 0 || stance == 3) {
-            action = action.NONE;
+        if (stance == 0) {
+            state = NONE;
         }
-        if (stance == 1 && tileMap[x + (1 * direction)][y] != null) {
-            action = action.NONE;
-        //}else if (stance == 2 && tileMap[x + (1 * direction)][y] == null && tileMap[x + (1 * direction)][y - 1] == null) {
-        } else if (stance == 2 && tileMap[x + (1 * direction)][y] != null && tileMap[x + (1 * direction)][y - 1] == null) {
-            //moveLeft();
+        if (stance == 3) {
+            if (wallCollision()) {
+                state = NONE;
+            } else if (map[getX() + (3 * direction)][getY()] != null) {
+                state = TIPPING;
+                maxRotation = 65;
+                tippingLenght = 3;
+                tippingHeight = 1;
+            } else if (map[getX() + (3 * direction)][getY() - 1] != null) {
+                state = TIPPING;
+                maxRotation = 40;
+                tippingLenght = 2;
+                tippingHeight = 2;
+            }
+            else if (map[getX() + (2 * direction)][getY() - 2] != null) {
+                state = TIPPING;
+                maxRotation = 15;
+                tippingLenght = 1;
+                tippingHeight = 2;
+            } else if (map[getX() + (2 * direction)][getY() - 1] != null) {
+                state = TIPPING;
+                maxRotation = 25;
+                tippingLenght = 1;
+                tippingHeight = 1;
+            } else if (map[getX() + (2 * direction)][getY()] != null) {
+                state = TIPPING;
+                maxRotation = 40;
+                tippingLenght = 2;
+                tippingHeight = 1;
+            } else {
+                state = TIPPING;
+                maxRotation = 90;
+                tippingLenght = 3;
+                tippingHeight = 0;
+            }
+        }
+        if (stance == 1 && wallCollision()) {
+            state = NONE;
+        } else if (stance == 2 && map[x + (1 * direction)][y] != null && map[x + (1 * direction)][y - 1] == null && map[x][y + 1] != null) {
             moveUp();
-            action = action.CLIMB;
+            state = CLIMB;
             stance = 1;
-        } else if (stance == 2 && tileMap[x + (1 * direction)][y - 1] != null) {
-            action = action.NONE;
+        } else if (stance == 2 && map[x + (1 * direction)][y - 1] != null) {
+            state = NONE;
         }
     }
 }

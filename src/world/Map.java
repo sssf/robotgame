@@ -1,8 +1,8 @@
-package game;
+package world;
 
 import java.awt.*;
-
 import actors.Tile;
+
 public class Map {
     private Tile[][]tiles;
     int width, height;
@@ -29,7 +29,7 @@ public class Map {
         return tiles;
     }
 
-    public void drawTiles(Graphics g) {
+    public void draw(Graphics g) {
         for (int i = 0; i < width;++i) {
             for (int j = 0; j < height; ++j) {
                 if (tiles[i][j] != null) {

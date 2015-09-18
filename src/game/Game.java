@@ -7,23 +7,24 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import actors.Player;
 import actors.*;
+import world.*;
 //import actors.Enemy;
 
 import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements KeyListener {
 
     private static int tileSize = 32;
-    Map map = new Map(50, 50, tileSize);
+    //world map = new Map(50, 50, tileSize);
 
-    Player player;
-    SmartEnemy enemy;
+    World world = World.createWorld();
+    //Player player;
+    //SmartEnemy enemy;
 
     BufferStrategy strategy;
 
-    int gameWidth = 800;
-    int gameHeight = 600;
+    final int gameWidth = 800;
+    final int gameHeight = 600;
 
     public Game() {
         JFrame container = new JFrame("Game");
@@ -48,65 +49,69 @@ public class Game extends Canvas implements KeyListener {
         strategy = getBufferStrategy();
         addKeyListener(this);
         requestFocus();
+        world.initWorld(50, 50, tileSize);
         initGame();
     }
     public void initGame() {
         initMap();
-        player = new Player(8, 1, tileSize);
-        enemy  = new SmartEnemy(9, 1, tileSize);
+        world.createActor(15, 1, tileSize, World.PLAYER);
+        world.createActor(9, 1, tileSize, World.ENEMY);
     }
     public void initMap() {
-        map.setTile(0, 0, new Tile(tileSize));
-        map.setTile(0, 1, new Tile(tileSize));
-        map.setTile(0, 2, new Tile(tileSize));
-        map.setTile(0, 3, new Tile(tileSize));
-        map.setTile(0, 4, new Tile(tileSize));
-        map.setTile(1, 5, new Tile(tileSize));
-        map.setTile(2, 6, new Tile(tileSize));
-        map.setTile(3, 7, new Tile(tileSize));
-        map.setTile(4, 8, new Tile(tileSize));
-        map.setTile(5, 9, new Tile(tileSize));
-        map.setTile(5, 9, new Tile(tileSize));
-        map.setTile(5, 9, new Tile(tileSize));
-        map.setTile(6, 9, new Tile(tileSize));
-        map.setTile(7, 9, new Tile(tileSize));
-        map.setTile(8, 10, new Tile(tileSize));
+        world.setTile(0, 0, new Tile(tileSize));
+        world.setTile(0, 1, new Tile(tileSize));
+        world.setTile(0, 2, new Tile(tileSize));
+        world.setTile(0, 3, new Tile(tileSize));
+        world.setTile(0, 4, new Tile(tileSize));
+        world.setTile(1, 5, new Tile(tileSize));
+        world.setTile(2, 6, new Tile(tileSize));
+        world.setTile(3, 7, new Tile(tileSize));
+        world.setTile(4, 8, new Tile(tileSize));
+        world.setTile(5, 9, new Tile(tileSize));
+        world.setTile(5, 9, new Tile(tileSize));
+        world.setTile(5, 9, new Tile(tileSize));
+        world.setTile(6, 9, new Tile(tileSize));
+        world.setTile(7, 9, new Tile(tileSize));
+        world.setTile(8, 10, new Tile(tileSize));
         //map.setTile(8, 8, new Tile(tileSize));
-        map.setTile(9, 9, new Tile(tileSize));
-        map.setTile(10, 9, new Tile(tileSize));
-        map.setTile(11, 9, new Tile(tileSize));
-        map.setTile(12, 9, new Tile(tileSize));
-        map.setTile(13, 8, new Tile(tileSize));
-        map.setTile(14, 8, new Tile(tileSize));
-        map.setTile(15, 8, new Tile(tileSize));
-        map.setTile(16, 8, new Tile(tileSize));
-        map.setTile(16, 7, new Tile(tileSize));
-        map.setTile(16, 6, new Tile(tileSize));
-        //map.setTile(16, 5, new Tile(tileSize));
+        world.setTile(9, 9, new Tile(tileSize));
+        world.setTile(10, 9, new Tile(tileSize));
+        world.setTile(11, 9, new Tile(tileSize));
+        world.setTile(12, 9, new Tile(tileSize));
+        world.setTile(13, 8, new Tile(tileSize));
+        world.setTile(14, 8, new Tile(tileSize));
+        world.setTile(15, 8, new Tile(tileSize));
+        world.setTile(16, 8, new Tile(tileSize));
+        world.setTile(16, 7, new Tile(tileSize));
+        world.setTile(17, 8, new Tile(tileSize));
+        world.setTile(18, 9, new Tile(tileSize));
+        world.setTile(19, 7, new Tile(tileSize));
+        world.setTile(19, 8, new Tile(tileSize));
+        world.setTile(17, 9, new Tile(tileSize));
+        world.setTile(19, 9, new Tile(tileSize));
     }
 
-    double x1 = 50;
-    double y1 = 50;
+    double x1 = 150;
+    double y1 = 150;
+
     double x2 = 50;
     double y2 = 100;
+    int i = 1;
     public void render() {
         Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+        //g.rotate(Math.toRadians(i++), 400, 300);
         g.setColor(Color.black);
         g.fillRect(0,0,gameWidth,gameHeight);
+        //g.fillRect(-400,-400,gameWidth*2,gameHeight*2);
         drawWorld(g);
-        player.draw(g);
-        enemy.draw(g);
-
         g.setColor(Color.green);
-        double angle = 0.05;
+        double angle =-0.05;
+
         double vx = x2 - x1;
         double vy = y2 - y1;
-
         vx = vx * Math.cos(angle) - vy * Math.sin(angle);
         vy = vx * Math.sin(angle) + vy * Math.cos(angle);
 
-        //x1 = (x1 - x2) * (Math.cos(angle) - (y1 - y2) * Math.sin(angle));
-        //y1 = (x1 - x2) * (Math.sin((angle)) + (y1 - y2) * Math.cos(angle));
         x2 = x1 + vx;
         y2 = y1 + vy;
 
@@ -115,60 +120,19 @@ public class Game extends Canvas implements KeyListener {
         strategy.show();
     }
 
-    public void drawWorld(Graphics g) {
-        map.drawTiles(g);
+    public void drawWorld(Graphics2D g) {
+        world.draw(g);
     }
 
     public void updateGame() {
-        //updatePlayer();
-        enemy.move();
-        enemy.update(player, map);
+        //enemy.update();
+        //player.update();
+        world.update();
     }
-
-
-    //public void updatePlayer() {
-        //int x = player.getX();
-        //int y = player.getY();
-        //int direction = player.getDirection();
-        //Tile[][] tileMap = map.getTileMap();
-        //if (player.canMove()) {
-            //if (player.wantsToMove() && tileMap[x][y + 1] != null) {
-                //if (player.getStance() == 1 && tileMap[x + (1 * direction)][y] == null) {
-                    //if (direction == -1) {
-                        //player.moveLeft();
-                    //} else if (direction == 1) {
-                        //player.moveRight();
-                    //}
-                //}else if (player.getStance() == 2 && tileMap[x + (1 * direction)][y] == null && tileMap[x + (1 * direction)][y - 1] == null) {
-                    //if (direction == -1) {
-                        //player.moveLeft();
-                    //} else if (direction == 1) {
-                        //player.moveRight();
-                    //}
-                //} else if (player.getStance() == 2 && tileMap[x + (1 * direction)][y] != null && tileMap[x + (1 * direction)][y - 1] == null) {
-                    //if (direction == -1) {
-                        //player.moveLeft();
-                        //player.moveUp();
-                        //player.setStance(1);
-                    //} else if (direction == 1) {
-                        //player.moveRight();
-                        //player.moveUp();
-                        //player.setStance(1);
-                    //}
-                //}
-            //}
-        //}
-
-        //if (!player.isMoving() && tileMap[x][y + 1] == null) {
-            //player.setStance(1);//Check laters
-            //player.moveDown();
-        //}
-    //}
 
     public void gameLoop() {
         while (true) {
             updateGame();
-            player.update(map);
             render();
             try {
                 Thread.sleep(50);
@@ -186,6 +150,7 @@ public class Game extends Canvas implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        Player player = (Player)world.getPlayer();
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             player.buttonRight = true;
         }
@@ -209,6 +174,7 @@ public class Game extends Canvas implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        Player player = (Player)world.getPlayer();
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             player.buttonRight = false;
         }
