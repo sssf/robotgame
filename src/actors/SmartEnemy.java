@@ -15,8 +15,8 @@ public class SmartEnemy extends Enemy {
         g.fillRect(x, y, tileSize, tileSize);
     }
 
-    public void update() {
-        super.update();
+    public void updateState() {
         this.state = MOVE;
+        super.updateState();
     }
 }

@@ -8,19 +8,21 @@ public class Enemy extends MoveableActor {
         super(tileSize, tileMap);
         setX(x);
         setY(y);
+        canFall = true;
+        canClimb = false;
     }
 
     public void draw(Graphics2D g) {
-        g.setColor(Color.orange);
+        g.setColor(Color.green);
         g.fillRect(x, y, tileSize, tileSize);
     }
 
-    public void update() {
-        super.update();
+    public void updateState() {
 
         if (state == NONE) {
             state = MOVE;
         } 
+        super.updateState();
     } 
 
 }

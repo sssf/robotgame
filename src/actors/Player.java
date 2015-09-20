@@ -1,10 +1,10 @@
 package actors;
 
 import java.awt.*;
-
+import java.util.LinkedList;
+import world.*;
 public class Player extends MoveableActor{
 
-    private int stance = 1; //0 = box_mode, 1 = normal, 2 = long legs.
 
     //Orkar inte med 3000 get/set till.
     public boolean buttonLeft = false;
@@ -13,8 +13,12 @@ public class Player extends MoveableActor{
     public boolean buttonDown = false;
     private int rotation = 0;
     private int maxRotation = 90;
-    private int tippingLenght = 1;
+    private int tippingLength = 1;
     private int tippingHeight = 1;
+
+    private int NORMAL = 0;
+    private int TALL   = 1;
+    private int TALLER = 2;
 
     public Player(int x, int y, int tileSize, Tile[][] map) {
         super(tileSize, map);
@@ -27,14 +31,9 @@ public class Player extends MoveableActor{
         canFall = true;
     }
 
-    public int getStance() {
-        return stance;
-    }
-
-    public void update() {
-        super.update();
+    public void updateState() {
         if (state == GROW) {
-            if (stance < 3) {
+            if (stance < 2) {
                 stance++;
             }
             state = NONE;
@@ -46,7 +45,8 @@ public class Player extends MoveableActor{
             state = NONE;
         }
         setKeys();
-        act();
+        super.updateState();
+        //act();
     }
     private void updateRotation(Graphics2D g) {
         rotation += direction * 5;
@@ -60,7 +60,7 @@ public class Player extends MoveableActor{
         g.rotate(Math.toRadians(-rotation), x + (direction == 1 ? tileSize : 0), y+tileSize);
         if (rotation % maxRotation == 0) {
             rotation = 0;
-            x += tippingLenght * tileSize * direction;
+            x += tippingLength * tileSize * direction;
             y -= tippingHeight * tileSize;
             stance = 1;
             state = NONE;
@@ -80,7 +80,8 @@ public class Player extends MoveableActor{
             }
             if (buttonUp) {
                 buttonUp = false;
-                state = GROW;
+                if (map[getX()][getY() - stance - 1] == null)
+                    state = GROW;
                 //moveUp();
             }
             if (buttonDown) {
@@ -90,38 +91,36 @@ public class Player extends MoveableActor{
         }
     }
 
-    private void act() {
-        switch (state) {
-            case MOVE: move(); break;
-            case GROW: break;
-            case SHRINK: break;
-        }
-    }
-
     public void draw(Graphics2D g) {
         if (state == TIPPING) {
             updateRotation(g);
             return;
         }
-        if (stance == 0) {
+        if (stance == -1) {
             g.setColor(Color.red);
             g.fillRect(x, y, tileSize, tileSize);
             g.setColor(Color.green);
             g.drawRect(x, y, tileSize, tileSize);
-        } else if (stance == 1){
+        } else if (stance == 0){
             g.setColor(Color.blue);
             g.fillRect(x, y, tileSize, tileSize+h);
+        } else if (stance == 1) {
+            g.setColor(Color.blue);
+            g.fillRect(x, y, tileSize, tileSize);
+            g.fillRect(x, y-tileSize, tileSize, tileSize+h);
         } else if (stance == 2) {
             g.setColor(Color.blue);
             g.fillRect(x, y, tileSize, tileSize);
             g.fillRect(x, y-tileSize, tileSize, tileSize+h);
-        } else if (stance == 3) {
-            g.setColor(Color.blue);
-            g.fillRect(x, y, tileSize, tileSize);
-            g.fillRect(x, y-tileSize, tileSize, tileSize+h);
             g.fillRect(x, y-(tileSize*2), tileSize, tileSize+h);
-
         }
+    }
+
+    private void setTipping(int state, int maxRotation, int tippingLength, int tippingHeight) {
+        this.state = state;
+        this.maxRotation = maxRotation;
+        this.tippingLength = tippingLength;
+        this.tippingHeight = tippingHeight;
     }
 
     public void move() {
@@ -130,52 +129,40 @@ public class Player extends MoveableActor{
             return;
         int x = getX();
         int y = getY();
-        if (stance == 0) {
+        if (stance == -1) {
             state = NONE;
         }
-        if (stance == 3) {
+        if (stance == 2) {
             if (wallCollision()) {
                 state = NONE;
-            } else if (map[getX() + (3 * direction)][getY()] != null) {
-                state = TIPPING;
-                maxRotation = 65;
-                tippingLenght = 3;
-                tippingHeight = 1;
-            } else if (map[getX() + (3 * direction)][getY() - 1] != null) {
-                state = TIPPING;
-                maxRotation = 40;
-                tippingLenght = 2;
-                tippingHeight = 2;
-            }
-            else if (map[getX() + (2 * direction)][getY() - 2] != null) {
-                state = TIPPING;
-                maxRotation = 15;
-                tippingLenght = 1;
-                tippingHeight = 2;
+            } else if (map[getX() + direction][getY() - 2] != null) {
+                state = NONE;
+            } else if (map[getX() + direction][getY() - 1] != null) {
+                state = NONE;
             } else if (map[getX() + (2 * direction)][getY() - 1] != null) {
-                state = TIPPING;
-                maxRotation = 25;
-                tippingLenght = 1;
-                tippingHeight = 1;
+                setTipping(TIPPING, 25, 1, 1);
             } else if (map[getX() + (2 * direction)][getY()] != null) {
-                state = TIPPING;
-                maxRotation = 40;
-                tippingLenght = 2;
-                tippingHeight = 1;
-            } else {
-                state = TIPPING;
-                maxRotation = 90;
-                tippingLenght = 3;
-                tippingHeight = 0;
+                setTipping(TIPPING, 40, 2, 1);
+            } else if (map[getX() + (3 * direction)][getY()] != null) {
+                setTipping(TIPPING, 65, 3, 1);
+            } else if (map[getX() + (3 * direction)][getY() - 1] != null) {
+                setTipping(TIPPING, 40, 2, 2);
+            } else if (map[getX() + 3 * direction][getY() - 2] != null) {
+                setTipping(TIPPING, 45, 2, 2);
+            } else if (map[getX() + (2 * direction)][getY() - 2] != null) {
+                setTipping(TIPPING, 15, 1, 2);
+            }  else {
+                setTipping(TIPPING, 90, 3, 0);
             }
         }
-        if (stance == 1 && wallCollision()) {
+
+        if (stance == 0 && wallCollision()) {
             state = NONE;
-        } else if (stance == 2 && map[x + (1 * direction)][y] != null && map[x + (1 * direction)][y - 1] == null && map[x][y + 1] != null) {
+        } else if (stance == 1 && map[x + (1 * direction)][y] != null && map[x + (1 * direction)][y - 1] == null && map[x][y + 1] != null) {
             moveUp();
             state = CLIMB;
-            stance = 1;
-        } else if (stance == 2 && map[x + (1 * direction)][y - 1] != null) {
+            stance = 0;
+        } else if (stance == 1 && map[x + (1 * direction)][y - 1] != null) {
             state = NONE;
         }
     }

@@ -50,7 +50,10 @@ public class World {
 
     public void update() {
         for (MoveableActor i : actors) {
-            i.update();
+            i.updateState();
+        }
+        for (MoveableActor i : actors) {
+            i.updatePosition();
         }
     }
 
