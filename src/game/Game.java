@@ -205,31 +205,11 @@ public class Game extends Canvas implements KeyListener {
         world.setTile(19, 15, new Tile(tileSize));
 }
 
-    double x1 = 150;
-    double y1 = 150;
-
-    double x2 = 50;
-    double y2 = 100;
-    int i = 1;
     public void render() {
         Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
-        //g.rotate(Math.toRadians(i++), 400, 300);
         g.setColor(Color.black);
         g.fillRect(0,0,gameWidth,gameHeight);
-        //g.fillRect(-400,-400,gameWidth*2,gameHeight*2);
         drawWorld(g);
-        g.setColor(Color.green);
-        double angle =-0.05;
-
-        double vx = x2 - x1;
-        double vy = y2 - y1;
-        vx = vx * Math.cos(angle) - vy * Math.sin(angle);
-        vy = vx * Math.sin(angle) + vy * Math.cos(angle);
-
-        x2 = x1 + vx;
-        y2 = y1 + vy;
-
-        g.draw(new Line2D.Double(x1, y1, x2, y2));
         g.dispose();
         strategy.show();
     }
