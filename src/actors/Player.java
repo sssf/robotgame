@@ -46,23 +46,29 @@ public class Player extends MoveableActor{
         }
         setKeys();
         super.updateState();
-        //act();
     }
-    private void updateRotation(Graphics2D g) {
+    private void updateRotation(Graphics2D g) {//TODO: Update x and y continuosly instead of just setting them at the end
         rotation += direction * 5;
         g.rotate(Math.toRadians(rotation), x + (direction == 1 ? tileSize : 0), y+tileSize);
 
-        g.setColor(Color.blue);
-        g.fillRect(x, y, tileSize, tileSize);
-        g.fillRect(x, y-tileSize, tileSize, tileSize+h);
-        g.fillRect(x, y-(tileSize*2), tileSize, tileSize+h);
+            g.setColor(Color.white);
+            g.fillRect(x, y, 2, tileSize);
+            g.fillRect(x+30, y, 2, tileSize);
+            g.fillRect(x, y-tileSize, 2, tileSize);
+            g.fillRect(x+30, y-tileSize, 2, tileSize);
+            //g.fillRect(x, y-tileSize, tileSize, tileSize);
+            g.fillRect(x, y-(tileSize*2), tileSize, tileSize);
+        //g.setColor(Color.blue);
+        //g.fillRect(x, y, tileSize, tileSize);
+        //g.fillRect(x, y-tileSize, tileSize, tileSize+h);
+        //g.fillRect(x, y-(tileSize*2), tileSize, tileSize+h);
 
         g.rotate(Math.toRadians(-rotation), x + (direction == 1 ? tileSize : 0), y+tileSize);
         if (rotation % maxRotation == 0) {
             rotation = 0;
             x += tippingLength * tileSize * direction;
             y -= tippingHeight * tileSize;
-            stance = 1;
+            stance = 0;
             state = NONE;
         }
 
@@ -102,17 +108,34 @@ public class Player extends MoveableActor{
             g.setColor(Color.green);
             g.drawRect(x, y, tileSize, tileSize);
         } else if (stance == 0){
-            g.setColor(Color.blue);
-            g.fillRect(x, y, tileSize, tileSize+h);
+            g.setColor(Color.white);
+            g.fillRect(x, y, tileSize, tileSize);
         } else if (stance == 1) {
-            g.setColor(Color.blue);
-            g.fillRect(x, y, tileSize, tileSize);
-            g.fillRect(x, y-tileSize, tileSize, tileSize+h);
+            int tmp = 0;
+            //if (state == MOVE) {
+            int tmp1 = 0;
+            int tmp2 = 0;
+            animation_thing %= 8;
+               if (animation_thing < 4) {
+                   tmp1 = 16;
+                   tmp2 = 0;
+               } else {
+                   tmp1 = 0;
+                   tmp2 = 16;
+               }
+            //}
+            g.setColor(Color.white);
+            g.fillRect(x, y, 2, tileSize-(tmp1));
+            g.fillRect(x+30, y, 2, tileSize-(tmp2));
+            g.fillRect(x, y-tileSize, tileSize, tileSize);
         } else if (stance == 2) {
-            g.setColor(Color.blue);
-            g.fillRect(x, y, tileSize, tileSize);
-            g.fillRect(x, y-tileSize, tileSize, tileSize+h);
-            g.fillRect(x, y-(tileSize*2), tileSize, tileSize+h);
+            g.setColor(Color.white);
+            g.fillRect(x, y, 2, tileSize);
+            g.fillRect(x+30, y, 2, tileSize);
+            g.fillRect(x, y-tileSize, 2, tileSize);
+            g.fillRect(x+30, y-tileSize, 2, tileSize);
+            //g.fillRect(x, y-tileSize, tileSize, tileSize);
+            g.fillRect(x, y-(tileSize*2), tileSize, tileSize);
         }
     }
 
@@ -158,7 +181,7 @@ public class Player extends MoveableActor{
 
         if (stance == 0 && wallCollision()) {
             state = NONE;
-        } else if (stance == 1 && map[x + (1 * direction)][y] != null && map[x + (1 * direction)][y - 1] == null && map[x][y + 1] != null) {
+        } else if (stance == 1 && map[x + (1 * direction)][y] != null && map[x + (1 * direction)][y - 1] == null && (isOnGround() || aboveActor())) {
             moveUp();
             state = CLIMB;
             stance = 0;

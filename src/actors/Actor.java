@@ -4,7 +4,7 @@ import java.awt.*;
 
 public abstract class Actor {
     public int x, y, w, h;
-    protected int tileSize;
+    protected static int tileSize;
     protected boolean hitbox;
 
     public Actor(int tileSize) {
@@ -19,8 +19,20 @@ public abstract class Actor {
 		this.y = tileSize * y;
 	}
 
+    public void setTileSize(int s) {
+        this.tileSize = s;
+    }
+
     public int getX() {
         return (x / tileSize);
+    }
+
+    public int getRealX() {
+        return x;
+    }
+
+    public int getRealY() {
+        return y;
     }
 
     public int getY() {

@@ -15,6 +15,18 @@ public class Map {
         height = h;
     }
 
+    public Map(Tile[][] tiles) {
+        width = 16;
+        height = 15;
+        this.tiles = tiles;
+        for (Tile[] t1 : tiles) {
+            for (Tile t2 : t1) {
+                if (t2 != null) {
+                    System.out.printf("Tile map\n\tX:%d\n\tY:%d\n", t2.getX(), t2.getY());
+                }
+            }
+        }
+    }
     public void setTile(int x, int y, Tile tile) {
         tiles[x][y] = tile;
         tile.setX(x);
@@ -29,7 +41,8 @@ public class Map {
         return tiles;
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
+        System.out.println("Map: draw width = " + width + "height = "+ height);
         for (int i = 0; i < width;++i) {
             for (int j = 0; j < height; ++j) {
                 if (tiles[i][j] != null) {

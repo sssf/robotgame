@@ -28,7 +28,8 @@ public class World {
     }
 
     public void initWorld(int width, int height, int tileSize) {
-        map = new Map(width, height, tileSize);
+        //map = new Map(width, height, tileSize);
+        map = new Map(utils.MapLoader.readMap());
     }
 
     public void setTile(int x, int y, Tile tile) {
@@ -58,9 +59,12 @@ public class World {
     }
 
     public void draw(Graphics2D g) {
+        System.out.println("World: draw");
         map.draw(g);
         for (MoveableActor i : actors) {
-            i.draw(g);
+            if (i != null) {
+                i.draw(g);
+            }
         }
     }
 
