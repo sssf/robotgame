@@ -162,19 +162,19 @@ public class Player extends MoveableActor{
                 state = NONE;
             } else if (map[getX() + direction][getY() - 1] != null) {
                 state = NONE;
+            } else if (map[getX() + (2 * direction)][getY() - 2] != null) {
+                setTipping(TIPPING, 20, 1, 2);
             } else if (map[getX() + (2 * direction)][getY() - 1] != null) {
                 setTipping(TIPPING, 25, 1, 1);
             } else if (map[getX() + (2 * direction)][getY()] != null) {
                 setTipping(TIPPING, 40, 2, 1);
             } else if (map[getX() + (3 * direction)][getY()] != null) {
                 setTipping(TIPPING, 65, 3, 1);
-            } else if (map[getX() + (3 * direction)][getY() - 1] != null) {
-                setTipping(TIPPING, 40, 2, 2);
             } else if (map[getX() + 3 * direction][getY() - 2] != null) {
                 setTipping(TIPPING, 45, 2, 2);
-            } else if (map[getX() + (2 * direction)][getY() - 2] != null) {
-                setTipping(TIPPING, 15, 1, 2);
-            }  else {
+            } else if (map[getX() + (3 * direction)][getY() - 1] != null) {
+                setTipping(TIPPING, 40, 2, 2);
+            } else {
                 setTipping(TIPPING, 90, 3, 0);
             }
         }
