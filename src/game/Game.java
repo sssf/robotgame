@@ -46,12 +46,12 @@ public class Game extends Canvas implements KeyListener {
         strategy = getBufferStrategy();
         addKeyListener(this);
         requestFocus();
-        world.loadMap(tileSize, "level_1.tmap");
+        world.loadMap(tileSize, "test.txt");
         initGame();
     }
     public void initGame() {
         initMap();
-        world.createActor(13, 10, tileSize, World.PLAYER);
+        world.createActor(17, 4, tileSize, World.PLAYER);
         world.createActor(1, 1, tileSize, World.ENEMY);
         world.createActor(6, 1, tileSize, World.SMART_ENEMY);
     }
@@ -64,7 +64,7 @@ public class Game extends Canvas implements KeyListener {
         Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
         g.setColor(Color.black);
         g.fillRect(0,0,gameWidth,gameHeight);
-        //g.translate(gameWidth/2-World.getInstance().getPlayer().getRealX(), gameHeight/2-World.getInstance().getPlayer().getRealY());
+        g.translate(gameWidth/2-World.getInstance().getPlayer().getRealX(), gameHeight/2-World.getInstance().getPlayer().getRealY());
         g.rotate(Math.toRadians(angle), World.getInstance().getPlayer().getRealX(),World.getInstance().getPlayer().getRealY());
         drawWorld(g);
         //g.rotate(Math.toRadians(-angle));

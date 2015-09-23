@@ -22,7 +22,7 @@ public class MapLoader {
                 if (width != -1 && height != -1) {
 
                 }
-                System.out.println(line);
+                //System.out.println(line);
                 String[] data = line.split(" ");
                 String keyword= data[0];
                 if (keyword.equals("tile")) {
@@ -52,12 +52,10 @@ public class MapLoader {
     }
 
     private static void setWidth(int w) {
-        System.out.println("width set to " + w);
         width = w;
     }
 
     private static void setHeight(int h) {
-        System.out.println("height set to " + h);
         height = h;
     }
 

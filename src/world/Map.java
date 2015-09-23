@@ -22,7 +22,7 @@ public class Map {
         for (Tile[] t1 : tiles) {
             for (Tile t2 : t1) {
                 if (t2 != null) {
-                    System.out.printf("Tile map\n\tX:%d\n\tY:%d\n", t2.getX(), t2.getY());
+                    //System.out.printf("Tile map\n\tX:%d\n\tY:%d\n", t2.getX(), t2.getY());
                 }
             }
         }
@@ -42,7 +42,7 @@ public class Map {
     }
 
     public void draw(Graphics2D g) {
-        System.out.println("Map: draw width = " + width + "height = "+ height);
+        //System.out.println("Map: draw width = " + width + "height = "+ height);
         for (int i = 0; i < width;++i) {
             for (int j = 0; j < height; ++j) {
                 if (tiles[i][j] != null) {
