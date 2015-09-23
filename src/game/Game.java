@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import utils.Camera;
 import actors.*;
 import world.*;
 
@@ -14,6 +15,7 @@ import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements KeyListener {
 
     private static int tileSize = 32;
+    private static Camera camera;
     int angle = 0;//Play time
 
     World world = World.createWorld();
@@ -46,8 +48,10 @@ public class Game extends Canvas implements KeyListener {
         strategy = getBufferStrategy();
         addKeyListener(this);
         requestFocus();
+
         world.loadMap(tileSize, "test.txt");
         initGame();
+        camera = new Camera((Player)world.getInstance().getPlayer(), gameWidth/2, 800, 0, 600);
     }
     public void initGame() {
         initMap();
@@ -64,7 +68,7 @@ public class Game extends Canvas implements KeyListener {
         Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
         g.setColor(Color.black);
         g.fillRect(0,0,gameWidth,gameHeight);
-        g.translate(gameWidth/2-World.getInstance().getPlayer().getRealX(), gameHeight/2-World.getInstance().getPlayer().getRealY());
+        camera.update(g);
         g.rotate(Math.toRadians(angle), World.getInstance().getPlayer().getRealX(),World.getInstance().getPlayer().getRealY());
         drawWorld(g);
         //g.rotate(Math.toRadians(-angle));
