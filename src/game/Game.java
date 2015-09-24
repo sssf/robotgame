@@ -14,8 +14,8 @@ import world.*;
 import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements KeyListener {
 
-    private static int tileSize = 32;
-    private static Camera camera;
+    private int tileSize = 32;
+    private Camera camera;
     int angle = 0;//Play time
 
     World world = World.createWorld();
@@ -51,17 +51,13 @@ public class Game extends Canvas implements KeyListener {
 
         world.loadMap(tileSize, "test.txt");
         initGame();
-        camera = new Camera((Player)world.getInstance().getPlayer(), gameWidth/2, 800, 0, 600);
+        camera = new Camera((Player)world.getInstance().getPlayer(), gameWidth, gameHeight, gameWidth/2, 800, 0, 600);
     }
     public void initGame() {
-        initMap();
         world.createActor(17, 4, tileSize, World.PLAYER);
-        world.createActor(1, 1, tileSize, World.ENEMY);
-        world.createActor(6, 1, tileSize, World.SMART_ENEMY);
+        world.createActor(1,  1, tileSize, World.ENEMY);
+        world.createActor(10,  1, tileSize, World.SMART_ENEMY);
     }
-    public void initMap() {//I can has tile map editor please?
-
-}
 
     int i = 0;
     public void render() {
@@ -71,7 +67,6 @@ public class Game extends Canvas implements KeyListener {
         camera.update(g);
         g.rotate(Math.toRadians(angle), World.getInstance().getPlayer().getRealX(),World.getInstance().getPlayer().getRealY());
         drawWorld(g);
-        //g.rotate(Math.toRadians(-angle));
         g.dispose();
         strategy.show();
     }
