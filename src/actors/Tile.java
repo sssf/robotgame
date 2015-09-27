@@ -6,9 +6,6 @@ import utils.Sprite;
 public class Tile extends Actor{
     //Sprite sprite = new Sprite("smiley.gif");
     int type;
-    public Tile(int tileSize) {
-        super(tileSize);
-    }
 
     public Tile(int tileSize, int type) {
         super(tileSize);
@@ -21,6 +18,6 @@ public class Tile extends Actor{
         //g.setColor(Color.green);
         //g.drawRect(x, y, tileSize, tileSize);
         //sprite.draw(g, x, y);
-        g.drawImage(spriteSheet.getSprite(2, 3), x, y, null);
+        g.drawImage(spriteSheet.getSprite(type), x, y, null);
     }
 }

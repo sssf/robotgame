@@ -14,11 +14,11 @@ import java.io.File;
 public class SpriteSheet {
     private String name;
     private BufferedImage image;
-    private BufferedImage[][] sprite;
+    private BufferedImage[] sprite;
 
     public SpriteSheet(String name) {
         this.name = name;
-        sprite = new BufferedImage[8][8];
+        sprite = new BufferedImage[64];
         loadSpriteSheet(name);
         loadSprites();
     }
@@ -49,22 +49,18 @@ public class SpriteSheet {
 	}
 
     private void loadSprites() {
+        int count = 0;
         for (int i = 0; i < 8;++i) {
             for (int j = 0; j < 8;++j) {
-                sprite[i][j] = image.getSubimage(32 * i, 32 * j, 32, 32);
-                if (sprite[i][j] == null) {
-                    System.out.println("fitta också");
-                    System.exit(0);
-                } 
+                sprite[count] = image.getSubimage(32 * i, 32 * j, 32, 32);
+                System.out.println(count);
+                count++;
+                
             }
         }
     }
 
-    public BufferedImage getSprite(int x, int y) {
-        if (sprite[x][y] == null) {
-            System.out.println("Något gick fel lol");
-            System.exit(0);
-        } 
-        return sprite[x][y];
+    public BufferedImage getSprite(int type) {
+        return sprite[type];
     }
 }
