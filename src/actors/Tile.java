@@ -16,10 +16,11 @@ public class Tile extends Actor{
     }
 
     public void draw(Graphics2D g) {
-        g.setColor(Color.red);
+        //g.setColor(Color.red);
         //g.fillRect(x, y, tileSize, tileSize);
-        g.setColor(Color.green);
-        g.drawRect(x, y, tileSize, tileSize);
+        //g.setColor(Color.green);
+        //g.drawRect(x, y, tileSize, tileSize);
         //sprite.draw(g, x, y);
+        g.drawImage(spriteSheet.getSprite(2, 3), x, y, null);
     }
 }

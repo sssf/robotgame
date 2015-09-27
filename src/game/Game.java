@@ -64,7 +64,7 @@ public class Game extends Canvas implements KeyListener {
         Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
         g.setColor(Color.black);
         g.fillRect(0,0,gameWidth,gameHeight);
-        camera.update(g);
+        //camera.update(g);
         g.rotate(Math.toRadians(angle), World.getInstance().getPlayer().getRealX(),World.getInstance().getPlayer().getRealY());
         drawWorld(g);
         g.dispose();

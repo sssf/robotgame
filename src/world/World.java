@@ -1,12 +1,14 @@
 package world;
 
 import actors.*;
+import utils.MapLoader;
 import java.util.LinkedList;
 import java.awt.Graphics2D;
 
 public class World {
     private LinkedList<MoveableActor> actors = new LinkedList<MoveableActor>();
     private Tile[][] map;
+    private MapLoader mapLoader = new MapLoader();
     private int width;
     private int height;
     private static World instance = null;
@@ -31,9 +33,9 @@ public class World {
 
     public void loadMap(int tileSize, String path) {
         //map = new Map(width, height, tileSize);
-        map = utils.MapLoader.readMap(path);
-        width = utils.MapLoader.getWidth();
-        height = utils.MapLoader.getHeight();
+        map = mapLoader.readMap(path);
+        width = mapLoader.getWidth();
+        height = mapLoader.getHeight();
     }
     //public void initWorld(int width, int height, int tileSize) {
         //map = new Map(width, height, tileSize);

@@ -1,14 +1,20 @@
 package actors;
 
 import java.awt.*;
+import utils.SpriteSheet;
 
 public abstract class Actor {
     public int x, y, w, h;
     protected static int tileSize;
+    protected static SpriteSheet spriteSheet = null;
     protected boolean hitbox;
 
     public Actor(int tileSize) {
         this.tileSize = tileSize;
+        if (spriteSheet == null) {
+            System.out.println("Loading spritesheet!");
+            spriteSheet = new SpriteSheet("spritesheet.png");
+        }
     }
 
     public void setX(int x) {

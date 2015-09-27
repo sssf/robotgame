@@ -1,6 +1,8 @@
 package utils;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import actors.Tile;
 
 public class MapLoader {
@@ -10,11 +12,17 @@ public class MapLoader {
     private static int width = 0;
     private static int height = 0;
 
-    public static Tile[][] readMap(String path) {
+    public MapLoader() {
+
+    }
+
+    public Tile[][] readMap(String path) {
         BufferedReader br;
         try {
-            br = new BufferedReader(new FileReader("res/" + path));
+            InputStream in = getClass().getClassLoader().getResourceAsStream("res/test.txt");
+            br = new BufferedReader(new InputStreamReader(in));
             setDimensions(br);
+            System.out.println("Width: " + width + "Height: " + height);
             loadedMap = new Tile[width][height];
 
             String line = br.readLine();
@@ -22,7 +30,6 @@ public class MapLoader {
                 if (width != -1 && height != -1) {
 
                 }
-                //System.out.println(line);
                 String[] data = line.split(" ");
                 String keyword= data[0];
                 if (keyword.equals("tile")) {
@@ -43,30 +50,29 @@ public class MapLoader {
         }
     }
 
-    public static int getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public static int getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    private static void setWidth(int w) {
+    private void setWidth(int w) {
         width = w;
     }
 
-    private static void setHeight(int h) {
+    private void setHeight(int h) {
         height = h;
     }
 
-    private static void readTile(int x, int y, int type) {
+    private void readTile(int x, int y, int type) {
         loadedMap[x][y] = new Tile(tileSize, type);
         loadedMap[x][y].setX(x);
         loadedMap[x][y].setY(y);
-
     }
 
-    private static void setDimensions(BufferedReader br) {
+    private void setDimensions(BufferedReader br) {
         try {
             String line = br.readLine();
             int count = 0;
@@ -81,7 +87,6 @@ public class MapLoader {
                 line = br.readLine();
                 count++;
             }
-
         } catch(Exception e) {
             System.out.println(e);
         }

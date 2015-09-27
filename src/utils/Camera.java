@@ -23,15 +23,14 @@ public class Camera {
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
 
-        y = player.getRealY();
-        x = player.getRealX();
+        this.y = player.getRealY();
+        this.x = player.getRealX();
     }
 
     public void update(Graphics2D g) {
-        //this.x = player.getRealX();
         int px = player.getRealX();
         int d = px - x;
-        d/=10;
+        d /= 10;
         x += d;
         if (x < minX) {
             x = minX;
@@ -43,22 +42,15 @@ public class Camera {
 
         int py = playerY;
         d = py - y;
-        d/=10;
+        d /= 10;
         y += d;
 
 
-        //if (Math.abs(playerY - y) > 8) {
-            //if (y < playerY) {
-                //y += 8;
-            //} else if (y > playerY) {
-                //y -= 8;
-            //}
-            if (y < minY) {
-                y = minY;
-            } else if (y > maxY) {
-                y = maxY;
-            }
-        //}
+        if (y < minY) {
+            y = minY;
+        } else if (y > maxY) {
+            y = maxY;
+        }
 
         g.translate(gameWidth / 2 -x, gameHeight / 2 -y);
     }
