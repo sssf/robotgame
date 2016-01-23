@@ -64,7 +64,7 @@ public class Game extends Canvas implements KeyListener {
         Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
         g.setColor(Color.black);
         g.fillRect(0,0,gameWidth,gameHeight);
-        camera.update(g);
+        //camera.update(g);
         g.rotate(Math.toRadians(angle), World.getInstance().getPlayer().getRealX(),World.getInstance().getPlayer().getRealY());
         drawWorld(g);
         g.dispose();
@@ -80,15 +80,32 @@ public class Game extends Canvas implements KeyListener {
     }
 
     public void gameLoop() {
+        double interpolation = 0;
+        final int TICKS_PER_SECOND = 25;
+        final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+        final int MAX_FRAMESKIP = 5;
+        double next_game_tick = System.currentTimeMillis();
+        int loops;
         while (true) {
             utils.FPSCounter.startCounter();
-            updateGame();
-            render();
-            try {
-                Thread.sleep(50);
-            } catch (Exception e) {
-                System.out.println("Main loop: " + e);
+            loops = 0;
+            while (System.currentTimeMillis() > next_game_tick && loops < MAX_FRAMESKIP) {
+
+                updateGame();
+
+                next_game_tick += SKIP_TICKS;
+                loops++;
             }
+            interpolation = (System.currentTimeMillis() + SKIP_TICKS - next_game_tick / (double) SKIP_TICKS);
+            //display_game(interpolation);
+            render();
+            //updateGame();
+            //render();
+            //try {
+            //Thread.sleep(50);
+            //} catch (Exception e) {
+            //System.out.println("Main loop: " + e);
+            //}
             utils.FPSCounter.stopAndPost();
         }
     }
