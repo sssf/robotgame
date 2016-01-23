@@ -30,21 +30,19 @@ public class SpriteSheet {
 			URL url = this.getClass().getClassLoader().getResource("res/" + name); // "../resources/smiley.gif" doesnt work =(
 
 			if (url == null) {
-				System.out.println("Can't find ref: " + name);
+				System.out.println("Can't find tilesheet: " + name);
                 System.exit(0);
 			}
 			sourceImage = ImageIO.read(url);
 		} catch (IOException e) {
-			System.out.println("Failed to load: " + name);
+			System.out.println("Failed to load tilesheet: " + name);
             System.exit(0);
 		}
 
 
-		// create an accelerated image of the right size to store our sprite in
 		GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         image = gc.createCompatibleImage(sourceImage.getWidth(),sourceImage.getHeight(),Transparency.BITMASK);
 
-		// draw our source image into the accelerated image
 		image.getGraphics().drawImage(sourceImage,0,0,null);
 	}
 
@@ -53,9 +51,7 @@ public class SpriteSheet {
         for (int i = 0; i < 8;++i) {
             for (int j = 0; j < 8;++j) {
                 sprite[count] = image.getSubimage(32 * i, 32 * j, 32, 32);
-                System.out.println(count);
                 count++;
-                
             }
         }
     }

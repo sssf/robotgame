@@ -64,7 +64,7 @@ public class Game extends Canvas implements KeyListener {
         Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
         g.setColor(Color.black);
         g.fillRect(0,0,gameWidth,gameHeight);
-        //camera.update(g);
+        camera.update(g);
         g.rotate(Math.toRadians(angle), World.getInstance().getPlayer().getRealX(),World.getInstance().getPlayer().getRealY());
         drawWorld(g);
         g.dispose();
@@ -81,6 +81,7 @@ public class Game extends Canvas implements KeyListener {
 
     public void gameLoop() {
         while (true) {
+            utils.FPSCounter.startCounter();
             updateGame();
             render();
             try {
@@ -88,9 +89,9 @@ public class Game extends Canvas implements KeyListener {
             } catch (Exception e) {
                 System.out.println("Main loop: " + e);
             }
+            utils.FPSCounter.stopAndPost();
         }
     }
-
     @Override
     public void keyTyped(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_PLUS) {}

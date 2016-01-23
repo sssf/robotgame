@@ -21,8 +21,7 @@ public class Enemy extends MoveableActor {
 
         if (state == NONE) {
             state = MOVE;
-        } 
+        }
         super.updateState();
-    } 
-
+    }
 }
